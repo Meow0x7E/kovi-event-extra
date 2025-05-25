@@ -1,0 +1,11 @@
+event:
+  notice:
+    poke:
+      "impl TryFrom<NoticeEvent> for PokeNoticeEvent":
+        Error:
+          because:
+            sub_type:
+              is_none: "sub_type 不存在"
+              ne_poke: "sub_type 不等于 poke"
+            user_id:
+              is_none: "user_id 不存在"

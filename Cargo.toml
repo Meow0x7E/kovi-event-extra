@@ -1,0 +1,8 @@
+[package]
+name = "kovi-event-extra"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+kovi = { version = "^0.*", default-features = false }
+rust-i18n = "^3"
