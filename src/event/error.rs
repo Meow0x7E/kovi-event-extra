@@ -8,6 +8,8 @@ use rust_i18n::t;
 pub enum Error {
     /// 未知上报类型
     UnknownPostType(String),
+    /// 未知消息类型
+    UnknownNoticeType(String),
     /// 未知子类型
     UnknownSubType(String),
     /// 事件类型转换错误
@@ -26,6 +28,9 @@ impl fmt::Display for Error {
         let t = match self {
             Self::UnknownPostType(it) => {
                 t!("event.error.Error.UnknownPostType", it => it)
+            }
+            Self::UnknownNoticeType(it) => {
+                t!("event.error.Error.UnknownNoticeType", it => it)
             }
             Self::UnknownSubType(it) => {
                 t!("event.error.Error.UnknownSubType", it => it)

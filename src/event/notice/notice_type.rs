@@ -57,7 +57,7 @@ impl TryFrom<&str> for NoticeType {
             "group_recall" => Ok(Self::GroupRecall),
             "friend_recall" => Ok(Self::FriendRecall),
             "notify" => Ok(Self::Notify),
-            _ => Err(Self::Error::UnknownSubType(value.to_string()))
+            _ => Err(Self::Error::UnknownNoticeType(value.to_string()))
         }
     }
 }

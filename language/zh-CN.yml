@@ -6,6 +6,7 @@ event:
   error:
     Error:
       UnknownPostType: "未知的上报类型: %{it}"
+      UnknownNoticeType: "未知的消息类型: %{it}"
       UnknownSubType: "未知的事件子类型: %{it}"
       UnableConvert: "%{source_event} 无法转换为 %{target_event}: %{because}"
   notice:
