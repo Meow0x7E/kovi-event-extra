@@ -9,9 +9,9 @@ use super::{NoticeType, SubType};
 use crate::event::{Error, PostType};
 use crate::{_unable_convert, is_none_and_return};
 
-/// 表示戳一戳的通知事件
+/// 表示群成员减少的通知事件
 ///
-/// 封装了戳一戳事件的特定字段，并提供便捷的访问方法。
+/// 封装了群成员减少事件的特定字段，并提供便捷的访问方法。
 ///
 /// # 类型转换
 /// 通过 [`TryFrom`] 实现从 [`NoticeEvent`] 的安全转换，如果转换失败则证明事件不是戳一戳事件：
@@ -33,39 +33,31 @@ use crate::{_unable_convert, is_none_and_return};
 /// });
 /// ```
 #[derive(Debug, Clone, StructName)]
-pub struct PokeNoticeEvent {
+pub struct GroupIncreaseNoticeEvent {
     /// 上报类型。固定为 [`PostType::Notice`]
     pub post_type: PostType,
-    /// 通知类型。固定为 [`NoticeType::Notify`]
+    /// 通知类型。固定为 [`NoticeType::GroupIncrease`]
     pub notice_type: NoticeType,
-    /// 提示类型。固定为 [`SubType::Poke`]
+    /// 事件子类型。可能为 [`SubType::Approve`] 或 [`SubType::Invite`]
     pub sub_type: SubType,
-    /// 群号。如果为 None 则为私聊戳一戳
-    pub group_id: Option<i64>,
-    /// 发送者 QQ 号
+    /// 群号
+    pub group_id: i64,
+    /// 操作者 QQ 号。如果是主动退群，则与 [`Self::user_id`] 相同
+    pub operator_id: i64,
+    /// 离开者 QQ 号
     pub user_id: i64,
-    /// 被戳者 QQ 号
-    pub target_id: i64,
 
     /// 原始的 [NoticeEvent]
     original_event: NoticeEvent
 }
 
-impl PokeNoticeEvent {
-    /// 如果戳一戳事件来自群聊则为 [`true`]
-    pub fn is_group(&self) -> bool { self.group_id.is_some() }
-    /// 如果戳一戳事件来自私聊则为 [`true`]
-    pub fn is_private(&self) -> bool { self.group_id.is_none() }
-}
-
-impl Deref for PokeNoticeEvent {
+impl Deref for GroupIncreaseNoticeEvent {
     type Target = NoticeEvent;
 
-    /// 获取原始的 [`NoticeEvent`] 引用
     fn deref(&self) -> &Self::Target { &self.original_event }
 }
 
-impl TryFrom<NoticeEvent> for PokeNoticeEvent {
+impl TryFrom<NoticeEvent> for GroupIncreaseNoticeEvent {
     type Error = Error;
 
     fn try_from(value: NoticeEvent) -> Result<Self, Self::Error> {
@@ -83,7 +75,7 @@ impl TryFrom<NoticeEvent> for PokeNoticeEvent {
 
                 if it != PostType::Notice {
                     let because = t!(r#"global.ne"#, a => "post_type", b => PostType::Notice);
-                    unable_convert!(because);
+                    return Err(unable_convert!(because));
                 }
 
                 it
@@ -91,9 +83,9 @@ impl TryFrom<NoticeEvent> for PokeNoticeEvent {
             notice_type: {
                 let it = NoticeType::try_from(value.notice_type.as_str())?;
 
-                if it != NoticeType::Notify {
-                    let because = t!(r#"global.ne"#, a => "notice_type", b => NoticeType::Notify);
-                    unable_convert!(because);
+                if it != NoticeType::GroupIncrease {
+                    let because = t!(r#"global.ne"#, a => "notice_type", b => NoticeType::GroupIncrease);
+                    return Err(unable_convert!(because));
                 }
 
                 it
@@ -103,23 +95,22 @@ impl TryFrom<NoticeEvent> for PokeNoticeEvent {
                     json, "sub_type", as_str
                 ))?;
 
-                if it != SubType::Poke {
-                    let because =
-                        t!(r#"global.ne"#, a => "sub_type", b => SubType::Poke);
+                if it != SubType::Approve && it != SubType::Invite {
+                    let because = t!(r#"event.notice.group_increase.GroupIncreaseNoticeEvent.SubType"#, a => SubType::Approve, b => SubType::Invite);
                     return Err(unable_convert!(because));
                 }
 
                 it
             },
-            group_id: json.get("group_id").and_then(|it| it.as_i64()),
+            group_id: is_none_and_return!(json, "group_id", as_i64),
+            operator_id: is_none_and_return!(json, "operator_id", as_i64),
             user_id: is_none_and_return!(json, "user_id", as_i64),
-            target_id: is_none_and_return!(json, "target_id", as_i64),
             original_event: value
         })
     }
 }
 
-impl TryFrom<&NoticeEvent> for PokeNoticeEvent {
+impl TryFrom<&NoticeEvent> for GroupIncreaseNoticeEvent {
     type Error = Error;
 
     fn try_from(value: &NoticeEvent) -> Result<Self, Self::Error> {

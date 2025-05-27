@@ -1,8 +1,13 @@
 [package]
 name = "kovi-event-extra"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 
 [dependencies]
-kovi = { version = "^0.*", default-features = false }
+kovi = { version = "^0.12", default-features = false }
 rust-i18n = "^3"
+struct-name = "0.0.1"
+struct-name-macro = "0.0.2"
+
+[patch.crates-io]
+kovi = { version = "0.12.0", git = "https://github.com/Threkork/Kovi.git", rev = "a3e4595fc5d9cd38201f225c3fb4a1e44a2c2a7c" }

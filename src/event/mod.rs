@@ -1,23 +1,11 @@
-use std::fmt;
+//! 事件处理核心模块
+//!
+//! 定义事件处理的基础结构和错误类型
 
+mod error;
 pub mod notice;
+mod post_type;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ErrorKind {
-    UnableConvert {
-        source_event: String,
-        target_event: String,
-        because: String
-    }
-}
-
-impl fmt::Display for ErrorKind {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            #[rustfmt::skip]
-            ErrorKind::UnableConvert { source_event, target_event, because } => {
-                writeln!(f, "{source_event} cannot be converted to a {target_event}: {because}")
-            }
-        }
-    }
-}
+// 重新导出
+pub use error::Error;
+pub use post_type::PostType;

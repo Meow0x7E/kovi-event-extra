@@ -1,11 +1,20 @@
+global:
+  is_none: "%{it} 不存在"
+  ne: "%{a} 不等于 %{b}"
+
 event:
+  error:
+    Error:
+      UnknownPostType: "未知的上报类型: %{it}"
+      UnknownSubType: "未知的事件子类型: %{it}"
+      UnableConvert: "%{source_event} 无法转换为 %{target_event}: %{because}"
   notice:
-    poke:
-      "impl TryFrom<NoticeEvent> for PokeNoticeEvent":
-        Error:
-          because:
-            sub_type:
-              is_none: "sub_type 不存在"
-              ne_poke: "sub_type 不等于 poke"
-            user_id:
-              is_none: "user_id 不存在"
+    group_admin:
+      GroupAdminNoticeEvent:
+        SubType: "sub_type 不是 %{a} 或 %{b}"
+    group_decrease:
+      GroupDecreaseNoticeEvent:
+        SubType: "sub_type 不是 %{a}、%{b} 或 %{c}"
+    group_increase:
+      GroupIncreaseNoticeEvent:
+        SubType: "sub_type 不是 %{a} 或 %{b}"
