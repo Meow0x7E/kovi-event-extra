@@ -14,7 +14,7 @@ use crate::{_unable_convert, is_none_and_return};
 /// 封装了群管理员变动事件的特定字段，并提供便捷的访问方法。
 ///
 /// # 类型转换
-/// 通过 [`TryFrom`] 实现从 [`NoticeEvent`] 的安全转换，如果转换失败则证明事件不是戳一戳事件：
+/// 通过 [`TryFrom`] 实现从 [`NoticeEvent`] 的安全转换，如果转换失败则证明事件不是群管理员变动事件：
 ///
 /// ```rust,no_run
 /// use std::ops::Deref;

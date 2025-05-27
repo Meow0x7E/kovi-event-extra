@@ -9,21 +9,21 @@ use super::{NoticeType, SubType};
 use crate::event::{Error, PostType};
 use crate::{_unable_convert, is_none_and_return};
 
-/// 表示群成员减少的通知事件
+/// 表示群成员增加的通知事件
 ///
-/// 封装了群成员减少事件的特定字段，并提供便捷的访问方法。
+/// 封装了群成员增加事件的特定字段，并提供便捷的访问方法。
 ///
 /// # 类型转换
-/// 通过 [`TryFrom`] 实现从 [`NoticeEvent`] 的安全转换，如果转换失败则证明事件不是戳一戳事件：
+/// 通过 [`TryFrom`] 实现从 [`NoticeEvent`] 的安全转换，如果转换失败则证明事件不是群成员增加事件：
 ///
 /// ```rust,no_run
 /// use std::ops::Deref;
 ///
 /// use kovi::{NoticeEvent, PluginBuilder as plugin, log};
-/// use kovi_event_extra::event::notice::PokeNoticeEvent;
+/// use kovi_event_extra::event::notice::GroupIncreaseNoticeEvent;
 ///
 /// plugin::on_notice(|it| async move {
-///     let event = match PokeNoticeEvent::try_from(it.deref()) {
+///     let event = match GroupIncreaseNoticeEvent::try_from(it.deref()) {
 ///         Ok(it) => it,
 ///         Err(it) => {
 ///             log::trace!("{}", it);

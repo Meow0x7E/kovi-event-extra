@@ -17,8 +17,8 @@ pub enum Error {
         /// 目标事件类型
         target_event: String,
         /// 转换失败原因
-        because: String,
-    },
+        because: String
+    }
 }
 
 impl fmt::Display for Error {
@@ -33,7 +33,7 @@ impl fmt::Display for Error {
             Self::UnableConvert {
                 source_event,
                 target_event,
-                because,
+                because
             } => {
                 t!("event.error.Error.UnableConvert", source_event => source_event, target_event => target_event, because => because)
             }
